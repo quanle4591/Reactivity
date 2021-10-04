@@ -4,6 +4,7 @@ import "./App.css";
 
 import { IActivity } from "./components/app/models/activity";
 import Navbar from "./components/app/layout/navbar/Navbar";
+import Body from "./components/app/layout/body/Body";
 
 function App() {
   const [activities, setActivities] = useState<IActivity[]>([]);
@@ -12,8 +13,8 @@ function App() {
     axios
       .get("http://localhost:5000/api/activities")
       .then((response) => {
+        console.log(response.data);
         setActivities(response.data);
-        console.log(activities);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -25,7 +26,9 @@ function App() {
       <header>
         <Navbar />
       </header>
-      {listActivities}
+      <div>
+        <Body activities={activities} />
+      </div>
     </div>
   );
 }
