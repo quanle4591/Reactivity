@@ -5,9 +5,14 @@ import style from "./ActivityList.module.css";
 
 interface Prop {
   activities: IActivity[];
+  onClickViewHandler: (id: string) => void;
 }
 
 const ActivityList = (props: Prop) => {
+  const onClickView = (id: string) => {
+    props.onClickViewHandler(id);
+  };
+
   if (props.activities.length > 0) {
   }
   const ActivityList =
@@ -15,15 +20,7 @@ const ActivityList = (props: Prop) => {
       ? props.activities.map((act) => {
           return (
             <Fragment key={act.id}>
-              <ActivityItem
-                id={act.id}
-                title={act.title}
-                date={act.date}
-                category={act.category}
-                description={act.description}
-                city={act.city}
-                venue={act.venue}
-              />
+              <ActivityItem activity={act} onClickViewHandler={onClickView} />
               <hr style={{ marginTop: "15px" }} />
             </Fragment>
           );
