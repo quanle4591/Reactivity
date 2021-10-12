@@ -2,6 +2,7 @@ import { Button } from "react-bootstrap";
 import Style from "./Navbar.module.css";
 
 const NavBar = () => {
+  const onCreateActivityHandler = () => {};
   return (
     <div className={Style.NavContainer}>
       <div className={Style.MenuItem}>
@@ -12,7 +13,7 @@ const NavBar = () => {
         <span>Activity</span>
       </div>
       <div className={Style.MenuItem}>
-        <Button variant="success">Create Activity</Button>{" "}
+        <button onClick={onCreateActivityHandler}>Create Activity</button>
       </div>
     </div>
   );

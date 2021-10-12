@@ -1,8 +1,7 @@
 .container {
   height: 300px;
-  width: 500px;
-  background-color: aquamarine;
-}
-
-.detail {
+  /* width: 500px; */
+  padding: 10px;
+  background-color: white;
+  margin-bottom: 20px;
 }

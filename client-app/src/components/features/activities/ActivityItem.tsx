@@ -1,5 +1,7 @@
 import { IActivity } from "../../app/models/activity";
 import style from "./ActivityItem.module.css";
+import { actId, detail } from "../../store/actions/activityActions";
+import store from "../../store/store";
 
 interface Props {
   activity: IActivity;
@@ -9,6 +11,7 @@ interface Props {
 const ActivityItem = (props: Props) => {
   const viewActivityHandler = (id: string) => {
     props.onClickViewHandler(id);
+    store.dispatch(actId(id));
   };
   return (
     <div className={style.card}>

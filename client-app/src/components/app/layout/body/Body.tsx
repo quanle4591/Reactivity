@@ -1,39 +1,101 @@
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+import style from "./Body.module.css";
 import { IActivity } from "../../models/activity";
+// import store from "../../../store/store";
+// import { detail, list } from "../../../store/actions/activityActions";
 import ActivityList from "../../../features/activities/ActivityList";
 import ActivityView from "../../../features/detail/ActivityView";
-import style from "./Body.module.css";
-import { act } from "@testing-library/react";
+import ActivityForm from "../../../features/form/ActivityForm";
 
-interface Prop {
-  activities: IActivity[];
-}
-
-const Body = (props: Prop) => {
+const Body = () => {
   const [activity, setActivity] = useState<IActivity>();
+  const [activities, setActivities] = useState<IActivity[]>([]);
+  const [isDisplayView, setIsDisplayView] = useState(false);
+  const [isDisplayForm, setIsDisplayForm] = useState(false);
+  const [isCreateMode, setIsCreateMode] = useState(false);
 
-  const onClickViewActivity = (id: string) => {
-    const viewActivity = props.activities.find((act) => act.id === id);
-    setActivity(viewActivity);
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/activities")
+      .then((response) => {
+        // store.dispatch(list(response.data));
+        setActivities(response.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const onClickViewActivity = (id: string): void => {
+    // const viewActivity = store
+    //   .getState()
+    //   .allActivities.find((act: IActivity) => act.id === id);
+    // store.dispatch(detail(id));
+    axios
+      .get(`http://localhost:5000/api/activities/${id}`)
+      .then((response) => {
+        setActivity(response.data);
+        setIsDisplayView(true);
+      })
+      .catch((err) => console.log(err));
   };
-  const displayActivity = activity ? (
-    <ActivityView
-      id={activity.id}
-      title={activity.title}
-      category={activity.category}
-      date={activity.date}
-      description={activity.description}
-      city={activity.city}
-      venue={activity.venue}
-    />
-  ) : null;
+
+  const onClickCreateActivity = (newActivity: IActivity): void => {
+    newActivity.id = "6b60618c-56e3-4e36-af62-2abea5a09293";
+    console.log("Body New Act: ", newActivity);
+    axios
+      .post(`http://localhost:5000/api/activities`, newActivity)
+      .then((response) => {
+        setActivity(response.data);
+        console.log(response);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const onClickCancelActivity = () => {
+    setIsDisplayView(false);
+  };
+
+  const onClickEditActivity = (id: string) => {
+    console.log(`Edit Activity: ${id}`);
+    setIsDisplayForm(true);
+    setIsCreateMode(true);
+  };
+
+  const onClickCancelForm = () => {
+    setIsDisplayForm(false);
+  };
+
+  const displayActivity =
+    isDisplayView && activity ? (
+      <ActivityView
+        activity={activity}
+        onCancelClick={onClickCancelActivity}
+        onEditClick={onClickEditActivity}
+      />
+    ) : null;
+
+  const displayFormActivity =
+    isDisplayForm && activity ? (
+      <ActivityForm
+        onCreateNewActivity={onClickCreateActivity}
+        onCancelFormMode={onClickCancelForm}
+        editActivity={activity}
+      />
+    ) : null;
+
   return (
     <div className={style.Body}>
-      <ActivityList
-        activities={props.activities}
-        onClickViewHandler={onClickViewActivity}
-      />
-      <div className={style.detail}>{displayActivity}</div>
+      <div className={style.list}>
+        <ActivityList
+          activities={activities}
+          onClickViewHandler={onClickViewActivity}
+        />
+      </div>
+      <div className={style.detail}>
+        <div>{displayActivity}</div>
+        <div>{displayFormActivity}</div>
+      </div>
     </div>
   );
 };

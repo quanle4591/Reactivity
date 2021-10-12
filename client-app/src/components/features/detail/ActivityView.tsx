@@ -1,16 +1,40 @@
 import { IActivity } from "../../app/models/activity";
 import style from "./ActivityView.module.css";
+import { actId } from "../../store/actions/activityActions";
+import store from "../../store/store";
 
-const ActivityView = (prop: IActivity) => {
+interface Prop {
+  activity: IActivity;
+  onCancelClick: () => void;
+  onEditClick: (id: string) => void;
+}
+
+const ActivityView = ({ activity, onCancelClick, onEditClick }: Prop) => {
   return (
     <div className={style.container}>
-      <li>id = {prop.id}</li>
-      <li>title = {prop.title}</li>
-      <li>date = {prop.date}</li>
-      <li>category = {prop.category}</li>
-      <li>description = {prop.description}</li>
-      <li>city = {prop.city}</li>
-      <li>venue = {prop.venue}</li>
+      <li>id = {activity.id}</li>
+      <li>title = {activity.title}</li>
+      <li>date = {activity.date}</li>
+      <li>category = {activity.category}</li>
+      <li>description = {activity.description}</li>
+      <li>city = {activity.city}</li>
+      <li>venue = {activity.venue}</li>
+      <div>
+        <button
+          onClick={() => {
+            onEditClick(activity.id);
+          }}
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => {
+            onCancelClick();
+          }}
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };
