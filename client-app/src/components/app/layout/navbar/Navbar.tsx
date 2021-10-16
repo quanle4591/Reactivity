@@ -1,8 +1,14 @@
 import { Button } from "react-bootstrap";
 import Style from "./Navbar.module.css";
 
-const NavBar = () => {
-  const onCreateActivityHandler = () => {};
+interface Prop {
+  setCreateMode: () => void;
+}
+
+const NavBar = ({ setCreateMode }: Prop) => {
+  const onCreateActivityHandler = () => {
+    setCreateMode();
+  };
   return (
     <div className={Style.NavContainer}>
       <div className={Style.MenuItem}>

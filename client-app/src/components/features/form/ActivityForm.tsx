@@ -4,12 +4,13 @@ import style from "./ActivityForm.module.css";
 
 interface Props {
   onCreateNewActivity: (newAct: IActivity) => void;
+  onSubmitActivity: (activity: IActivity) => void;
   onCancelFormMode: () => void;
-  editActivity: IActivity;
+  editActivity: IActivity | undefined;
 }
 
 const ActivityForm = (props: Props) => {
-  let currentActivityForm: IActivity = {
+  let initialActivity: IActivity = props.editActivity ?? {
     id: "",
     title: "",
     description: "",
@@ -19,15 +20,14 @@ const ActivityForm = (props: Props) => {
     venue: "",
   };
 
-  if (props.editActivity.id != "") {
-    currentActivityForm = props.editActivity;
-  }
-
-  const [actForm, setActForm] = useState(currentActivityForm);
+  const [actForm, setActForm] = useState<IActivity>(initialActivity);
 
   const submitNewActivity = () => {
-    console.log(currentActivityForm);
-    // props.onCreateNewActivity(currentActivityForm);
+    if (actForm.id === "") {
+      props.onCreateNewActivity(actForm);
+      return;
+    }
+    props.onSubmitActivity(actForm);
   };
 
   const cancelFormMode = () => {
@@ -40,38 +40,38 @@ const ActivityForm = (props: Props) => {
         className={style.input}
         type="text"
         placeholder="Title"
-        value={currentActivityForm.title}
+        value={actForm.title}
         onChange={(e) => {
           setActForm({
             ...actForm,
             title: e.target.value,
           });
-          currentActivityForm.title = e.target.value;
+          actForm.title = e.target.value;
         }}
       />
       <textarea
         className={style.input}
         placeholder="Description"
-        value={currentActivityForm.description}
+        value={actForm.description}
         onChange={(e) => {
           setActForm({
             ...actForm,
             description: e.target.value,
           });
-          currentActivityForm.description = e.target.value;
+          actForm.description = e.target.value;
         }}
       />
       <input
         className={style.input}
         type="text"
         placeholder="Category"
-        value={currentActivityForm.category}
+        value={actForm.category}
         onChange={(e) => {
           setActForm({
             ...actForm,
             category: e.target.value,
           });
-          currentActivityForm.category = e.target.value;
+          actForm.category = e.target.value;
         }}
       />
       <input className={style.input} type="text" placeholder="Date" />
@@ -79,26 +79,26 @@ const ActivityForm = (props: Props) => {
         className={style.input}
         type="text"
         placeholder="City"
-        value={currentActivityForm.city}
+        value={actForm.city}
         onChange={(e) => {
           setActForm({
             ...actForm,
             city: e.target.value,
           });
-          currentActivityForm.city = e.target.value;
+          actForm.city = e.target.value;
         }}
       />
       <input
         className={style.input}
         type="text"
         placeholder="Venue"
-        value={currentActivityForm.venue}
+        value={actForm.venue}
         onChange={(e) => {
           setActForm({
             ...actForm,
             venue: e.target.value,
           });
-          currentActivityForm.venue = e.target.value;
+          actForm.venue = e.target.value;
         }}
       />
       <div className={style.button}>

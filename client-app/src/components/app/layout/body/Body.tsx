@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { v4 as uuid } from "uuid";
+import { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import style from "./Body.module.css";
 import { IActivity } from "../../models/activity";
@@ -9,28 +10,31 @@ import ActivityList from "../../../features/activities/ActivityList";
 import ActivityView from "../../../features/detail/ActivityView";
 import ActivityForm from "../../../features/form/ActivityForm";
 
-const Body = () => {
+const Body = forwardRef((props, ref) => {
   const [activity, setActivity] = useState<IActivity>();
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [isDisplayView, setIsDisplayView] = useState(false);
   const [isDisplayForm, setIsDisplayForm] = useState(false);
-  const [isCreateMode, setIsCreateMode] = useState(false);
+  const [isCreateAcitivty, setIsCreateActivity] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    createNewActivity() {
+      setIsDisplayForm(true);
+      setIsCreateActivity(true);
+      setActivity(undefined);
+    },
+  }));
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/activities")
       .then((response) => {
-        // store.dispatch(list(response.data));
         setActivities(response.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [activities]);
 
   const onClickViewActivity = (id: string): void => {
-    // const viewActivity = store
-    //   .getState()
-    //   .allActivities.find((act: IActivity) => act.id === id);
-    // store.dispatch(detail(id));
     axios
       .get(`http://localhost:5000/api/activities/${id}`)
       .then((response) => {
@@ -40,30 +44,37 @@ const Body = () => {
       .catch((err) => console.log(err));
   };
 
-  const onClickCreateActivity = (newActivity: IActivity): void => {
-    newActivity.id = "6b60618c-56e3-4e36-af62-2abea5a09293";
-    console.log("Body New Act: ", newActivity);
-    axios
-      .post(`http://localhost:5000/api/activities`, newActivity)
-      .then((response) => {
-        setActivity(response.data);
-        console.log(response);
-      })
-      .catch((err) => console.log(err));
-  };
-
   const onClickCancelActivity = () => {
     setIsDisplayView(false);
   };
 
   const onClickEditActivity = (id: string) => {
-    console.log(`Edit Activity: ${id}`);
     setIsDisplayForm(true);
-    setIsCreateMode(true);
   };
 
   const onClickCancelForm = () => {
     setIsDisplayForm(false);
+  };
+
+  const onCreateActivity = (newActivity: IActivity): void => {
+    newActivity.id = uuid();
+    axios
+      .post(`http://localhost:5000/api/activities`, newActivity)
+      .then((response) => {
+        // setActivity(response.data);
+        console.log(response.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const onSubmitActivity = (activity: IActivity) => {
+    axios
+      .put(`http://localhost:5000/api/activities/${activity.id}`, activity)
+      .then((response) => {
+        // setActivity(response.data);
+        console.log(response.data);
+      })
+      .catch((err) => console.log(err));
   };
 
   const displayActivity =
@@ -78,9 +89,17 @@ const Body = () => {
   const displayFormActivity =
     isDisplayForm && activity ? (
       <ActivityForm
-        onCreateNewActivity={onClickCreateActivity}
+        onCreateNewActivity={onCreateActivity}
         onCancelFormMode={onClickCancelForm}
+        onSubmitActivity={onSubmitActivity}
         editActivity={activity}
+      />
+    ) : isDisplayForm && isCreateAcitivty ? (
+      <ActivityForm
+        onCreateNewActivity={onCreateActivity}
+        onCancelFormMode={onClickCancelForm}
+        onSubmitActivity={onSubmitActivity}
+        editActivity={undefined}
       />
     ) : null;
 
@@ -98,6 +117,6 @@ const Body = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Body;
