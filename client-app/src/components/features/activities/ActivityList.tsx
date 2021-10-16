@@ -6,11 +6,16 @@ import style from "./ActivityList.module.css";
 interface Prop {
   activities: IActivity[];
   onClickViewHandler: (id: string) => void;
+  onClickDeleteHandler: (id: string) => void;
 }
 
 const ActivityList = (props: Prop) => {
   const onClickView = (id: string) => {
     props.onClickViewHandler(id);
+  };
+
+  const onClickDelete = (id: string) => {
+    props.onClickDeleteHandler(id);
   };
 
   if (props.activities.length > 0) {
@@ -20,7 +25,11 @@ const ActivityList = (props: Prop) => {
       ? props.activities.map((act) => {
           return (
             <Fragment key={act.id}>
-              <ActivityItem activity={act} onClickViewHandler={onClickView} />
+              <ActivityItem
+                activity={act}
+                onClickViewHandler={onClickView}
+                onClickDeleteHandler={onClickDelete}
+              />
               <hr style={{ marginTop: "15px" }} />
             </Fragment>
           );

@@ -77,6 +77,17 @@ const Body = forwardRef((props, ref) => {
       .catch((err) => console.log(err));
   };
 
+  const onClickDeleteActivity = (id: string): void => {
+    console.log(`activity delete id: ${id}`);
+    axios
+      .delete(`http://localhost:5000/api/activities/${id}`)
+      .then((response) => {
+        // setActivity(response.data);
+        console.log(response.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
   const displayActivity =
     isDisplayView && activity ? (
       <ActivityView
@@ -109,6 +120,7 @@ const Body = forwardRef((props, ref) => {
         <ActivityList
           activities={activities}
           onClickViewHandler={onClickViewActivity}
+          onClickDeleteHandler={onClickDeleteActivity}
         />
       </div>
       <div className={style.detail}>
