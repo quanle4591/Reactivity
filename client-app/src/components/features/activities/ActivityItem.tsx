@@ -1,7 +1,7 @@
 import { IActivity } from "../../app/models/activity";
 import style from "./ActivityItem.module.css";
-import { actId, detail } from "../../store/actions/activityActions";
-import store from "../../store/store";
+// import { actId, detail } from "../../store/actions/activityActions";
+// import store from "../../store/store";
 
 interface Props {
   activity: IActivity;

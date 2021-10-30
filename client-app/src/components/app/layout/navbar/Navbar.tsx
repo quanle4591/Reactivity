@@ -1,4 +1,3 @@
-import { Button } from "react-bootstrap";
 import Style from "./Navbar.module.css";
 
 interface Prop {

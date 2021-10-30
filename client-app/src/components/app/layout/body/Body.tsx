@@ -4,6 +4,7 @@ import { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import style from "./Body.module.css";
 import { IActivity } from "../../models/activity";
+import agent from "../../api/agent";
 // import store from "../../../store/store";
 // import { detail, list } from "../../../store/actions/activityActions";
 import ActivityList from "../../../features/activities/ActivityList";
@@ -32,16 +33,16 @@ const Body = forwardRef((props, ref) => {
         setActivities(response.data);
       })
       .catch((err) => console.log(err));
-  }, [activities]);
+    agent.Activities.list().then((response) => {
+      console.log(response);
+    });
+  }, []);
 
   const onClickViewActivity = (id: string): void => {
-    axios
-      .get(`http://localhost:5000/api/activities/${id}`)
-      .then((response) => {
-        setActivity(response.data);
-        setIsDisplayView(true);
-      })
-      .catch((err) => console.log(err));
+    agent.Activities.activity(id).then((response) => {
+      setActivity(response);
+      setIsDisplayView(true);
+    });
   };
 
   const onClickCancelActivity = () => {
@@ -58,23 +59,20 @@ const Body = forwardRef((props, ref) => {
 
   const onCreateActivity = (newActivity: IActivity): void => {
     newActivity.id = uuid();
-    axios
-      .post(`http://localhost:5000/api/activities`, newActivity)
-      .then((response) => {
-        // setActivity(response.data);
-        console.log(response.data);
-      })
-      .catch((err) => console.log(err));
+    agent.Activities.create(newActivity).then((response) => {
+      //setActivity()
+    });
   };
 
   const onSubmitActivity = (activity: IActivity) => {
-    axios
-      .put(`http://localhost:5000/api/activities/${activity.id}`, activity)
-      .then((response) => {
-        // setActivity(response.data);
-        console.log(response.data);
-      })
-      .catch((err) => console.log(err));
+    // axios
+    //   .put(`http://localhost:5000/api/activities/${activity.id}`, activity)
+    //   .then((response) => {
+    //     // setActivity(response.data);
+    //     console.log(response.data);
+    //   })
+    //   .catch((err) => console.log(err));
+    agent.Activities.edit(activity.id, activity).then((response) => {});
   };
 
   const onClickDeleteActivity = (id: string): void => {
